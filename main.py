@@ -5,7 +5,6 @@ from PySide import QtGui
 from main_gui import Ui_MainWindow  # my UI from Qt4 Designer(pyside-uic)
 from Scrapers import Biddergy       # My own class
 import sys
-import threading
 
 
 # Connect buttons
