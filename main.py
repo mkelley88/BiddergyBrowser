@@ -1,11 +1,12 @@
 
-# !/usr/bin/env python3
+#!/usr/bin/env python3
 from PySide import QtGui
 # from PySide.QtCore import QThread, QObject, Signal, Slot
 from main_gui import Ui_MainWindow  # my UI from Qt4 Designer(pyside-uic)
 from Scrapers import Biddergy       # My own class
 import sys
 import threading
+
 
 # Connect buttons
 def connections():
@@ -28,16 +29,6 @@ def status_msg(msg):
     ui.statusbar.showMessage(msg)
 
 
-class FuncThread(threading.Thread):
-    def __init__(self, target, *args):
-        self._target = target
-        self._args = args
-        threading.Thread.__init__(self)
-
-    def run(self):
-        self._target(*self._args)
-
-
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     MainWindow = QtGui.QMainWindow()
@@ -45,17 +36,17 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     connections()
+    # Load credentials from file.
     with open('login.txt') as f:
         credentials = f.readline().strip().split(':')
     f.closed
 
+    # Login, download summary, then refresh the UI.
     b = Biddergy()
-    status_msg('Logging in...')
     b.login(credentials[0],credentials[1])
-    status_msg('Loading summary...')
     summary_data = b.summary()
     b.logout()
-    status_msg('Ready')
+
 
     refresh_ui()
     sys.exit(app.exec_())
