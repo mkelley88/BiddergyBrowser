@@ -7,7 +7,6 @@ class Biddergy(object):
     def __init__(self, email="None", passwd="None"):
         self.email = email
         self.passwd = passwd
-        self.login(self.email, self.passwd)
 
     # =======|URL Shortcuts|========
     urlBase =         'https://www.biddergy.com/'
@@ -24,15 +23,12 @@ class Biddergy(object):
     browser = RoboBrowser(history=True, parser='lxml')
 
     # Log in to biddergy.com
-    def login(self, email, passwd):
-        print('Logging in...')
+    def login(self):
+        print('Logging in as: ', self.email)
         self.browser.open(self.page_Login)
-
-
-
         frm_login = self.browser.get_form(action='/login.asp')
-        frm_login['email'] = email
-        frm_login['password'] = passwd
+        frm_login['email'] = self.email
+        frm_login['password'] = self.passwd
         self.browser.session.headers['Referer'] = self.urlBase
         self.browser.submit_form(frm_login)
 
@@ -43,6 +39,7 @@ class Biddergy(object):
 
     # Get summary from biddergy
     def summary(self):
+        self.login()
         print('Loading summary...')
         self.browser.open(self.page_MyAccount)
         summary_data = []

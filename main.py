@@ -1,19 +1,15 @@
-
 #!/usr/bin/env python3
-from PySide import QtGui
+from PySide import QtGui, QtCore
 from PySide.QtCore import QThread, QObject, Signal, Slot
 from main_gui import Ui_MainWindow  # my UI from Qt4 Designer(pyside-uic)
 from Scrapers import Biddergy       # My own class
-import sys,time
-
+import sys
+import time
 import queue
-import threading
-
-#class Worker(QObject):
 
 
 class BiddergyWrapper(QThread):
-    def __init__(self, q, loop_time = 1.0/60):
+    def __init__(self, q, loop_time=1.0/60):
         self.q = q
         self.timeout = loop_time
         super(BiddergyWrapper, self).__init__()
@@ -30,18 +26,19 @@ class BiddergyWrapper(QThread):
                 self.idle()
 
     def idle(self):
-        # put the code you would have put in the `run` loop here
         pass
 
     def _summary(self):
-        summary_data = print( b.summary())
+        b.summary()
+
     def summary(self):
         self.onThread(self._summary)
 
-    def _login(self,e,p):
-        b.login(e,p)
-    def login(self,e,p):
-        self.onThread(self._login(e,p))
+    def _login(self):
+        b.login()
+
+    def login(self):
+        self.onThread(self._login())
 
 
 # Connect buttons
@@ -72,23 +69,20 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     connections()
+
     # Load credentials from file.
     with open('login.txt') as f:
         credentials = f.readline().strip().split(':')
-    f.closed
 
     # Login, download summary, then refresh the UI.
-    b = Biddergy(credentials[0],credentials[1])
+    b = Biddergy(credentials[0], credentials[1])
     request_queue = queue.Queue()
-    bw = BiddergyWrapper( request_queue )
+    bw = BiddergyWrapper(request_queue)
     bw.start()
-    # b.login(credentials[0],credentials[1])
-    # b.logout()
 
-    #bw.login(credentials[0],credentials[1])
-    #bw.summary()
+    # Run QApplication
     app.exec_()
+    # Begin "Graceful stop?"
     bw.quit()
     b.logout()
-    time.sleep(1)
     sys.exit()
