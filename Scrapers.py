@@ -3,7 +3,12 @@ import re
 import sys
 
 
-class Biddergy:
+class Biddergy(object):
+    def __init__(self, email="None", passwd="None"):
+        self.email = email
+        self.passwd = passwd
+        self.login(self.email, self.passwd)
+
     # =======|URL Shortcuts|========
     urlBase =         'https://www.biddergy.com/'
     page_MyAccount =  'https://www.biddergy.com/myauction.asp'
@@ -22,6 +27,9 @@ class Biddergy:
     def login(self, email, passwd):
         print('Logging in...')
         self.browser.open(self.page_Login)
+
+
+
         frm_login = self.browser.get_form(action='/login.asp')
         frm_login['email'] = email
         frm_login['password'] = passwd
