@@ -95,7 +95,7 @@ def sandbox():
         x = 0
         for i in browse:
             ui.listWidget.addItems(x, i['title'])
-            x++
+            x += 1
     except:
         pass
 

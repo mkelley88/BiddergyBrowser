@@ -1,7 +1,5 @@
-from robobrowser import RoboBrowser
 from bs4 import BeautifulSoup
-from datetime import date, datetime
-import re
+from robobrowser import RoboBrowser
 
 
 class Biddergy(object):
@@ -41,18 +39,18 @@ class Biddergy(object):
         self.browser.submit_form(frm_login)
 
         # Sanity check (^_^)
-        self.loggedin = 0
+        self.loggedin = False
         if self.browser.find('body', attrs={'class': '  guest'}):
             print('Logged in as GUEST.')
         if self.browser.find('body', attrs={'class': '  loggedin'}):
-            print('Logged in as ', self.email)
-            self.loggedin = 1
+            print('Logged in as {}.'.format(self.email))
+            self.loggedin = True
 
     # Log out of biddergy.com
     def logout(self):
         print('Logging out...')
         self.browser.open(self.url_Logout)
-        self.loggedin = 0
+        self.loggedin = False
 
     # Get account summary from biddergy
     def get_summary(self):
@@ -101,10 +99,10 @@ class Biddergy(object):
         #    return '404'
 
     def get_item_info(self, item):
-        '''
+        """
         Returns an auction item as a dictionary object.
         Tags 'format', 'price', 'bids', 'opens', 'location', 'start', 'end', 'highbidder', 'description', 'images'.
-        '''
+        """
         item_tags = ['format', 'price', 'bids', 'opens', 'location',
                      'start', 'end', 'highbidder', 'description', 'images']
         data = {}
@@ -175,8 +173,3 @@ class Biddergy(object):
             auctionList.update({count: {'date': date, 'title': title, 'description': description, 'link': link}})
             count += 1
         return auctionList
-
-# Define regular expression for extracting date (unneeded)
-# reg = re.compile('(\d+)\/(\d+)\/(\d+)')
-# match = re.search(reg, a)
-# d = "NULL" #datetime.strptime(match.group(0), '%m/%d/%y')
